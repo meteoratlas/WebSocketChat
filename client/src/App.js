@@ -1,22 +1,27 @@
-import React, { Component } from 'react';
-import './App.css';
-import socketIOClient from "socket.io-client"
+import React, { Component } from "react";
+import "./App.css";
+import socketIOClient from "socket.io-client";
 
 class App extends Component {
-  constructor(){
-    super()
+  constructor() {
+    super();
+    this.state = {};
   }
-  componentDidMount(){
+  componentDidMount() {
     const socket = socketIOClient("localhost:3000");
     socket.on("onUserJoined", msg => {
       console.log(msg);
-  });
-  
-  socket.on("sendMessage", msg => {
+    });
+
+    socket.on("sendMessage", msg => {
       console.log(msg);
-  });
+    });
   }
-  render(){
+  clickSendMessage = e => {
+    e.preventDefault();
+  };
+
+  render() {
     return (
       <div className="App">
         <header className="App-header">
@@ -26,7 +31,8 @@ class App extends Component {
         <main>
           <ul id="messages"></ul>
           <form action="">
-            <input id="m"  /><button>Send</button>
+            <input id="m" />
+            <button onClick={this.clickSendMessage}>Send</button>
           </form>
         </main>
       </div>
