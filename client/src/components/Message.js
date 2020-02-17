@@ -1,7 +1,7 @@
 import React from "react";
 const Message = props => {
   return (
-    <div className="message">
+    <div className={"message " + props.userClass}>
       <p>
         {props.user ? <span className="msg-username">{props.user}</span> : ""}{" "}
         {props.timestamp ? (

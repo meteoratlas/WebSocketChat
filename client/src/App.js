@@ -83,6 +83,11 @@ class App extends Component {
                     user={x.username}
                     timestamp={x.timestamp}
                     message={x.message}
+                    userClass={
+                      x.username === this.state.username
+                        ? "my-message"
+                        : "other-message"
+                    }
                   ></Message>
                 );
               })}

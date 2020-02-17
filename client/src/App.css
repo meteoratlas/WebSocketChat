@@ -1,7 +1,3 @@
-.App {
-  /* text-align: center; */
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 20vh;
@@ -23,7 +19,6 @@
   box-sizing: border-box;
 }
 body {
-  /* font: 1.5rem Helvetica, Arial; */
   font-family: "Lato", sans-serif;
   background-color: lightslategrey;
   display: flex;
@@ -51,8 +46,6 @@ form button {
 }
 
 .message {
-  /* background-color: rgb(179, 250, 99); */
-  background-image: linear-gradient(rgb(179, 250, 99), rgb(104, 236, 181));
   opacity: 0.8;
   min-width: 10%;
   max-width: 50%;
@@ -61,6 +54,17 @@ form button {
   border-radius: 8px;
   word-wrap: break-word;
 }
+
+.my-message {
+  background-image: linear-gradient(rgb(179, 250, 99), rgb(104, 236, 181));
+  align-self: flex-start;
+}
+
+.other-message {
+  background-image: linear-gradient(rgb(99, 177, 250), rgb(80, 149, 240));
+  align-self: flex-end;
+}
+
 .message p:first-child {
   margin-bottom: 0.4rem;
 }
@@ -79,7 +83,10 @@ form button {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  max-width: 50%;
   max-height: 80%;
+  display: flex;
+  flex-direction: column;
 }
 #messages li {
   padding: 5px 10px;
