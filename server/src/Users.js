@@ -29,8 +29,8 @@ const getUser = id => {
   return users.find(user => user.id === id);
 };
 
-const updateUserTyping = (id, isTyping) => {
-  isTyping ? usersTyping.add(id) : usersTyping.delete(id);
+const updateUserTyping = (username, isTyping) => {
+  isTyping ? usersTyping.add(username) : usersTyping.delete(username);
 };
 
 const getUsersInRoom = room => {
@@ -39,7 +39,6 @@ const getUsersInRoom = room => {
 };
 
 const getUsersTyping = () => {
-  // console.log(usersTyping);
   return Array.from(usersTyping);
 };
 
