@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import socketIOClient from "socket.io-client";
 import Message from "./components/Message";
+import moment from "moment";
 
 class App extends Component {
   constructor() {
@@ -39,7 +40,10 @@ class App extends Component {
     this.setState({ value: "" });
     this.io.emit(
       "onSendMessage",
-      { message: this.state.value, timestamp: new Date().getDate() },
+      {
+        message: this.state.value,
+        timestamp: moment().format("h:mm:ss a, MMMM Do YYYY")
+      },
       error => {
         if (error) console.log(error);
       }
