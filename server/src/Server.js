@@ -3,6 +3,7 @@ const http = require("http");
 const path = require("path");
 const socketio = require("socket.io");
 const moment = require("moment");
+const { addUser, removeUser, getUser, getUsersInRoom } = require("./Users");
 
 const app = express();
 const server = http.createServer(app);
@@ -21,22 +22,33 @@ io.on("connection", socket => {
     callback();
   });
 
-  socket.on("onUserNameSubmit", ({ username, room }) => {
-    socket.join(room);
-    console.log("New user: " + username);
+  socket.on("onUserNameSubmit", ({ username, room }, callback) => {
+    const { error, user } = addUser({ id: socket.id, username, room });
+
+    if (error) {
+      return callback(error);
+    }
+
+    socket.join(user.room);
+
     socket.emit("onUserJoined", `Welcome, ${username}!`);
 
-    socket.broadcast.to(room).emit("sendMessage", {
-      message: `${username} has joined the chat.`,
-      timestamp: moment().format("h:mm:ss a, MMMM Do YYYY")
+    socket.broadcast.to(user.room).emit("sendMessage", {
+      message: `${user.username} has joined the chat.`,
+      timestamp: moment().format("h:mm:ss a, MMMM Do YYYY"),
+      username: user.username
     });
+    callback();
   });
 
   socket.on("disconnect", () => {
-    io.emit("sendMessage", {
-      message: "A user has left the chat.",
-      timestamp: moment().format("h:mm:ss a, MMMM Do YYYY")
-    });
+    const user = removeUser(socket.id);
+    if (user) {
+      io.to(user.room).emit("sendMessage", {
+        message: `${user.username} has left the chat.`,
+        timestamp: moment().format("h:mm:ss a, MMMM Do YYYY")
+      });
+    }
   });
 });
 

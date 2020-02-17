@@ -46,7 +46,8 @@ class App extends Component {
       "onSendMessage",
       {
         message: this.state.value,
-        timestamp: moment().format("h:mm:ss a, MMMM Do YYYY")
+        timestamp: moment().format("h:mm:ss a, MMMM Do YYYY"),
+        username: this.state.username
       },
       error => {
         if (error) console.log(error);
@@ -75,7 +76,7 @@ class App extends Component {
                 return (
                   <Message
                     key={i}
-                    user="user"
+                    user={x.username}
                     timestamp={x.timestamp}
                     message={x.message}
                   ></Message>

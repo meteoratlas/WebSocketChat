@@ -3,8 +3,6 @@ import React, { Component } from "react";
 class Join extends Component {
   constructor(props) {
     super(props);
-    // this.port = process.env.port || 3000;
-    // this.io = socketIOClient(`localhost:${this.port}`);
     this.state = {
       inputVal: ""
     };
@@ -15,11 +13,20 @@ class Join extends Component {
   submitUsername = () => {
     if (!this.state.inputVal) return;
 
-    // TODO: check for username clashes
-    this.props.socket.emit("onUserNameSubmit", {
-      username: this.state.inputVal,
-      room: "defaultRoom"
-    });
+    this.props.socket.emit(
+      "onUserNameSubmit",
+      {
+        username: this.state.inputVal,
+        room: "defaultRoom"
+      },
+      error => {
+        if (error) {
+          // TODO: improve rejection notice & handling
+          alert(error);
+          window.location.reload();
+        }
+      }
+    );
     this.props.callback(this.state.inputVal);
     this.setState({ inputVal: "" });
   };
