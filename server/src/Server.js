@@ -15,10 +15,9 @@ const publicDirectoryPath = path.join(__dirname, "../public");
 app.use(express.static(publicDirectoryPath));
 
 io.on("connection", socket => {
-  //   console.log("new user connected");
-
   socket.on("onSendMessage", (msg, callback) => {
-    io.emit("sendMessage", msg);
+    const user = getUser(socket.id);
+    io.to(user.room).emit("sendMessage", msg);
     callback();
   });
 

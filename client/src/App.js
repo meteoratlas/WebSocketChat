@@ -10,6 +10,7 @@ class App extends Component {
     super(props);
     this.port = process.env.port || 3000;
     this.io = socketIOClient(`localhost:${this.port}`);
+    this.lastMessageRef = React.createRef();
     this.state = {
       value: "",
       messages: [{ user: "Server", message: "Welcome to the room!" }],
@@ -24,13 +25,12 @@ class App extends Component {
 
     // A message is sent
     this.io.on("sendMessage", msg => {
-      // console.log(msg);
-
       this.setState(prev => {
         return {
           messages: [...prev.messages, msg]
         };
       });
+      this.scroll();
     });
   }
   componentWillUnmount() {
@@ -53,12 +53,16 @@ class App extends Component {
         if (error) console.log(error);
       }
     );
+    this.scroll();
   };
   handleChange = e => {
     this.setState({ value: e.target.value });
   };
   setUserName = name => {
     this.setState({ username: name });
+  };
+  scroll = () => {
+    this.lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   render() {
@@ -82,6 +86,7 @@ class App extends Component {
                   ></Message>
                 );
               })}
+              <div ref={this.lastMessageRef}></div>
             </div>
             <form action="">
               <input
