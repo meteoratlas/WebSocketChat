@@ -15,14 +15,16 @@ app.use(express.static(publicDirectoryPath));
 io.on("connection", socket => {
   console.log("new user connected");
   socket.emit("onUserJoined", "Welcome!");
-  socket.broadcast.emit("sendMessage", "A new user has joined the chat.");
+  socket.broadcast.emit("sendMessage", {
+    message: "A new user has joined the chat."
+  });
 
   socket.on("onSendMessage", (msg, callback) => {
     io.emit("sendMessage", msg);
     callback();
   });
   socket.on("disconnect", () => {
-    io.emit("sendMessage", "A user has left the chat.");
+    io.emit("sendMessage", { message: "A user has left the chat." });
   });
 });
 

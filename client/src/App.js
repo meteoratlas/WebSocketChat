@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import socketIOClient from "socket.io-client";
+import Message from "./components/Message";
 
 class App extends Component {
   constructor() {
@@ -8,7 +9,8 @@ class App extends Component {
     this.port = process.env.port || 3000;
     this.io = socketIOClient(`localhost:${this.port}`);
     this.state = {
-      value: ""
+      value: "",
+      messages: [{ user: "Server", message: "Welcome to the room!" }]
     };
   }
   componentDidMount() {
@@ -18,6 +20,12 @@ class App extends Component {
 
     this.io.on("sendMessage", msg => {
       console.log(msg);
+
+      this.setState(prev => {
+        return {
+          messages: [...prev.messages, msg]
+        };
+      });
     });
   }
   componentWillUnmount() {
@@ -29,9 +37,13 @@ class App extends Component {
 
     if (!this.state.value) return;
     this.setState({ value: "" });
-    this.io.emit("onSendMessage", this.state.value, error => {
-      if (error) console.log(error);
-    });
+    this.io.emit(
+      "onSendMessage",
+      { message: this.state.value, timestamp: new Date().getDate() },
+      error => {
+        if (error) console.log(error);
+      }
+    );
   };
   handleChange = e => {
     this.setState({ value: e.target.value });
@@ -45,7 +57,18 @@ class App extends Component {
           <h2>Room Name</h2>
         </header>
         <main>
-          <ul id="messages"></ul>
+          <div id="messages">
+            {this.state.messages.map((x, i) => {
+              return (
+                <Message
+                  key={i}
+                  user="user"
+                  timestamp={x.timestamp}
+                  message={x.message}
+                ></Message>
+              );
+            })}
+          </div>
           <form action="">
             <input
               id="message-input"
