@@ -1,4 +1,5 @@
 const users = [];
+const usersTyping = new Set();
 
 const addUser = ({ id, username, room }) => {
   username = username.trim().toLowerCase();
@@ -28,14 +29,25 @@ const getUser = id => {
   return users.find(user => user.id === id);
 };
 
+const updateUserTyping = (id, isTyping) => {
+  isTyping ? usersTyping.add(id) : usersTyping.delete(id);
+};
+
 const getUsersInRoom = room => {
   room = room.trim().toLowerCase();
   return users.filter(user => user.room === room);
+};
+
+const getUsersTyping = () => {
+  // console.log(usersTyping);
+  return Array.from(usersTyping);
 };
 
 module.exports = {
   addUser,
   removeUser,
   getUser,
-  getUsersInRoom
+  getUsersInRoom,
+  updateUserTyping,
+  getUsersTyping
 };

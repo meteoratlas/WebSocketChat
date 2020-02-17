@@ -17,6 +17,7 @@ class Join extends Component {
       "onUserNameSubmit",
       {
         username: this.state.inputVal,
+        //TODO: input fields for multiple rooms
         room: "defaultRoom"
       },
       error => {
