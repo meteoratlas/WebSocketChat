@@ -2,25 +2,29 @@ import React, { Component } from "react";
 import "./App.css";
 import socketIOClient from "socket.io-client";
 import Message from "./components/Message";
+import Join from "./components/Join";
 import moment from "moment";
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.port = process.env.port || 3000;
     this.io = socketIOClient(`localhost:${this.port}`);
     this.state = {
       value: "",
-      messages: [{ user: "Server", message: "Welcome to the room!" }]
+      messages: [{ user: "Server", message: "Welcome to the room!" }],
+      username: ""
     };
   }
   componentDidMount() {
+    // someone has connected to the page
     this.io.on("onUserJoined", msg => {
-      console.log(msg);
+      // console.log(msg);
     });
 
+    // A message is sent
     this.io.on("sendMessage", msg => {
-      console.log(msg);
+      // console.log(msg);
 
       this.setState(prev => {
         return {
@@ -52,36 +56,44 @@ class App extends Component {
   handleChange = e => {
     this.setState({ value: e.target.value });
   };
+  setUserName = name => {
+    this.setState({ username: name });
+  };
 
   render() {
+    const { username } = this.state;
     return (
       <div className="App">
         <header className="App-header">
           <h1>Chat</h1>
           <h2>Room Name</h2>
         </header>
-        <main>
-          <div id="messages">
-            {this.state.messages.map((x, i) => {
-              return (
-                <Message
-                  key={i}
-                  user="user"
-                  timestamp={x.timestamp}
-                  message={x.message}
-                ></Message>
-              );
-            })}
-          </div>
-          <form action="">
-            <input
-              id="message-input"
-              value={this.state.value}
-              onChange={this.handleChange}
-            />
-            <button onClick={this.clickSendMessage}>Send</button>
-          </form>
-        </main>
+        {username ? (
+          <main>
+            <div id="messages">
+              {this.state.messages.map((x, i) => {
+                return (
+                  <Message
+                    key={i}
+                    user="user"
+                    timestamp={x.timestamp}
+                    message={x.message}
+                  ></Message>
+                );
+              })}
+            </div>
+            <form action="">
+              <input
+                id="message-input"
+                value={this.state.value}
+                onChange={this.handleChange}
+              />
+              <button onClick={this.clickSendMessage}>Send</button>
+            </form>
+          </main>
+        ) : (
+          <Join callback={this.setUserName} socket={this.io} />
+        )}
       </div>
     );
   }
