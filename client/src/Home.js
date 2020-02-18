@@ -6,8 +6,8 @@ import Header from "./components/Header";
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.port = process.env.port || 5000;
-    this.io = socketIOClient(`localhost:${this.port}`);
+    // this.port = process.env.port || 5000;
+    this.io = socketIOClient();
     this.state = {};
   }
   render() {
