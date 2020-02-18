@@ -52,6 +52,10 @@ io.on("connection", socket => {
     io.emit("reportTypingUsers", getUsersTyping());
   });
 
+  socket.on("onDraw", data => {
+    socket.broadcast.emit("reportDraw", data);
+  });
+
   socket.on("disconnect", () => {
     const user = removeUser(socket.id);
     if (user) {

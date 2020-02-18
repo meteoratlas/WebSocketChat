@@ -1,16 +1,12 @@
 import React, { Component } from "react";
 import "./App.css";
-import socketIOClient from "socket.io-client";
 import Message from "./components/Message";
 import Join from "./components/Join";
-import Header from "./components/Header";
 import moment from "moment";
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.port = process.env.port || 5000;
-    this.io = socketIOClient(`localhost:${this.port}`);
     this.typingTimeout = setTimeout(null, 1000);
     this.lastMessageRef = React.createRef();
     this.state = {
@@ -23,16 +19,16 @@ class App extends Component {
   }
   componentDidMount() {
     // someone has connected to the page
-    this.io.on("onUserJoined", msg => {
+    this.props.io.on("onUserJoined", msg => {
       // console.log(msg);
     });
 
-    this.io.on("reportTypingUsers", typing => {
+    this.props.io.on("reportTypingUsers", typing => {
       this.setState({ usersTyping: typing });
     });
 
     // A message is sent
-    this.io.on("sendMessage", msg => {
+    this.props.io.on("sendMessage", msg => {
       this.setState(prev => {
         return {
           messages: [...prev.messages, msg]
@@ -42,7 +38,7 @@ class App extends Component {
     });
   }
   componentWillUnmount() {
-    this.io.close();
+    this.props.io.close();
   }
 
   clickSendMessage = e => {
@@ -50,7 +46,7 @@ class App extends Component {
 
     if (!this.state.value) return;
     this.setState({ value: "" });
-    this.io.emit(
+    this.props.io.emit(
       "onSendMessage",
       {
         message: this.state.value,
@@ -65,7 +61,7 @@ class App extends Component {
   };
   handleChange = e => {
     this.setState({ value: e.target.value });
-    this.io.emit("userIsTyping", {
+    this.props.io.emit("userIsTyping", {
       username: this.state.username,
       isTyping: true
     });
@@ -73,7 +69,7 @@ class App extends Component {
     this.typingTimeout = setTimeout(this.reportNotTyping, 1000);
   };
   reportNotTyping = () => {
-    this.io.emit("userIsTyping", {
+    this.props.io.emit("userIsTyping", {
       username: this.state.username,
       isTyping: false
     });
@@ -101,11 +97,6 @@ class App extends Component {
     const { username } = this.state;
     return (
       <div className="App">
-        {/* <Header /> */}
-        <header className="App-header">
-          <h1>Chat</h1>
-          <h2>Room Name</h2>
-        </header>
         {username ? (
           <main>
             <div id="messages">
@@ -139,7 +130,7 @@ class App extends Component {
             </div>
           </main>
         ) : (
-          <Join callback={this.setUserName} socket={this.io} />
+          <Join callback={this.setUserName} socket={this.props.io} />
         )}
       </div>
     );
