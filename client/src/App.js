@@ -11,7 +11,7 @@ class App extends Component {
     this.lastMessageRef = React.createRef();
     this.state = {
       value: "",
-      messages: [{ user: "Server", message: "Welcome to the room!" }],
+      messages: [],
       username: "",
       room: "",
       usersTyping: []
@@ -20,7 +20,11 @@ class App extends Component {
   componentDidMount() {
     // someone has connected to the page
     this.props.io.on("onUserJoined", msg => {
-      // console.log(msg);
+      this.setState(prev => {
+        return {
+          messages: [...prev.messages, msg]
+        };
+      });
     });
 
     this.props.io.on("reportTypingUsers", typing => {
@@ -96,7 +100,7 @@ class App extends Component {
   render() {
     const { username } = this.state;
     return (
-      <div className="App">
+      <>
         {username ? (
           <main>
             <div id="messages">
@@ -117,7 +121,7 @@ class App extends Component {
               })}
               <div ref={this.lastMessageRef}></div>
             </div>
-            <div>
+            <div id="user-input">
               <p id="user-typing-notice">{this.reportUsersTyping()}</p>
               <form action="">
                 <input
@@ -132,7 +136,7 @@ class App extends Component {
         ) : (
           <Join callback={this.setUserName} socket={this.props.io} />
         )}
-      </div>
+      </>
     );
   }
 }

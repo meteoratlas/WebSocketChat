@@ -37,7 +37,11 @@ io.on("connection", socket => {
 
     socket.join(user.room);
 
-    socket.emit("onUserJoined", `Welcome, ${username}!`);
+    socket.emit("onUserJoined", {
+      message: `Welcome, ${username}! Current users: ${getUsersInRoom(
+        "defaultRoom"
+      ).map(user => user.username)}`
+    });
 
     socket.broadcast.to(user.room).emit("sendMessage", {
       message: `${user.username} has joined the chat.`,

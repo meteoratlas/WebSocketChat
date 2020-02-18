@@ -4,7 +4,7 @@ import P5Wrapper from "react-p5-wrapper";
 const Header = props => {
   function sketch(p) {
     p.setup = function() {
-      p.createCanvas(1000, 200);
+      p.createCanvas(1200, 200);
       p.background(40);
       p.fill(255);
       p.textFont("Lato");

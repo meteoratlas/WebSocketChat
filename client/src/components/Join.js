@@ -33,12 +33,14 @@ class Join extends Component {
   };
   render() {
     return (
-      <div>
+      <div id="join-form">
+        <label>Enter a username to join:</label>
         <input
           placeholder="Enter a username"
           value={this.state.inputVal}
           onChange={this.handleChange}
         ></input>
+        <br />
         <button onClick={this.submitUsername}>Submit</button>
       </div>
     );
